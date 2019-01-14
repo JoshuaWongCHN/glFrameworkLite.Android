@@ -21,7 +21,7 @@ public class VertexArray {
 
     public void addVertices(float[] vertices) {
         if (mVerticesVBOId != Constants.INVALID_BUFFER) {
-            int[] vboIds = IdPool.getBufferIds();
+            int[] vboIds = IdPool.getBufferId();
             glGenVertexArrays(1, vboIds, 0);
             if (vboIds[0] == Constants.INVALID_BUFFER) {
                 Debugger.e(TAG, "Generate VBO failed!");
@@ -43,7 +43,7 @@ public class VertexArray {
 
     public void addIndices(byte[] indices) {
         if (mIndicesVBOId != Constants.INVALID_BUFFER) {
-            int[] vboIds = IdPool.getBufferIds();
+            int[] vboIds = IdPool.getBufferId();
             glGenVertexArrays(1, vboIds, 0);
             if (vboIds[0] == Constants.INVALID_BUFFER) {
                 Debugger.e(TAG, "Generate VBO failed!");
@@ -63,7 +63,7 @@ public class VertexArray {
 
     public void bind() {
         if (mVAOId != Constants.INVALID_BUFFER) {
-            int[] vaoIds = IdPool.getBufferIds();
+            int[] vaoIds = IdPool.getBufferId();
             glGenVertexArrays(1, vaoIds, 0);
             if (vaoIds[0] == Constants.INVALID_BUFFER) {
                 Debugger.e(TAG, "Generate VAO failed!");

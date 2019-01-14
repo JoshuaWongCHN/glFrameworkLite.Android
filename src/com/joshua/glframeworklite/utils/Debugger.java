@@ -42,4 +42,9 @@ public class Debugger {
         }
     }
 
+    public static void e(String tag, String msg, Throwable t) {
+        if (DEBUG) {
+            Log.e(tag, msg, t);
+        }
+    }
 }

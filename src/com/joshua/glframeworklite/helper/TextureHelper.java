@@ -35,7 +35,7 @@ public class TextureHelper {
      * 加载图形文件到OpenGL，生成纹理ID，用作纹理引用
      */
     public static int loadTexture(Context context, int resId) {
-        final int[] textureObjectIds = IdPool.getTextureIds();
+        final int[] textureObjectIds = IdPool.getTextureId();
         //创建纹理对象
         glGenTextures(1, textureObjectIds, 0);
         if (textureObjectIds[0] == INVALID_TEXTURE) {

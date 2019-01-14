@@ -10,22 +10,22 @@ import java.util.Deque;
  * @Version 1.0
  */
 public class IdPool {
-    private static final Deque<int[]> mIdsList = new ArrayDeque<>();
     private static final int POOL_LIMIT = 1024;
+    private static final Deque<int[]> mIdList = new ArrayDeque<>();
 
-    public static synchronized int[] getTextureIds() {
-        int[] ids = mIdsList.size() > 0 ? mIdsList.remove() : new int[1];
-        ids[0] = Constants.INVALID_TEXTURE;
-        return ids;
+    public static synchronized int[] getTextureId() {
+        int[] id = mIdList.size() > 0 ? mIdList.remove() : new int[1];
+        id[0] = Constants.INVALID_TEXTURE;
+        return id;
     }
 
-    public static synchronized int[] getBufferIds() {
-        int[] ids = mIdsList.size() > 0 ? mIdsList.remove() : new int[1];
-        ids[0] = Constants.INVALID_BUFFER;
-        return ids;
+    public static synchronized int[] getBufferId() {
+        int[] id = mIdList.size() > 0 ? mIdList.remove() : new int[1];
+        id[0] = Constants.INVALID_BUFFER;
+        return id;
     }
 
-    public static synchronized void recycle(int[] ids) {
+    public static synchronized void recycle(int[] id) {
         if(id == null){
             return;
         }
@@ -33,12 +33,12 @@ public class IdPool {
             return;
         }
         
-        if (mIdsList.size() < POOL_LIMIT) {
-            mIdsList.offer(ids);
+        if (mIdList.size() < POOL_LIMIT) {
+            mIdList.offer(id);
         }
     }
 
     public static synchronized void clear() {
-        mIdsList.clear();
+        mIdList.clear();
     }
 }

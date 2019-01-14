@@ -2,9 +2,11 @@ package com.joshua.glframeworklite;
 
 import android.content.Context;
 import android.opengl.GLES20;
+import android.opengl.GLU;
 import android.util.Log;
 
 import com.joshua.glframeworklite.helper.ShaderHelper;
+import com.joshua.glframeworklite.utils.Debugger;
 import com.joshua.glframeworklite.utils.FileUtil;
 
 import static android.opengl.GLES20.GL_NO_ERROR;
@@ -89,8 +91,8 @@ public class ShaderProgram {
 
     protected void checkError() {
         int error = GLES20.glGetError();
-        if ((error != GL_NO_ERROR) {
-            Throwable t = new Throwable
+        if (error != GL_NO_ERROR) {
+            Throwable t = new Throwable();
             Debugger.e(TAG, "GL error: " + GLU.gluErrorString(error), t);
         }
     }
