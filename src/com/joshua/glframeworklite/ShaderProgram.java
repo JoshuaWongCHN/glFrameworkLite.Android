@@ -90,6 +90,7 @@ public class ShaderProgram {
     protected void checkError() {
         int error = GLES20.glGetError();
         if ((error != GL_NO_ERROR) {
+            Throwable t = new Throwable
             Debugger.e(TAG, "GL error: " + GLU.gluErrorString(error), t);
         }
     }
