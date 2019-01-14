@@ -88,9 +88,9 @@ public class ShaderProgram {
     }
 
     protected void checkError() {
-        int error = GL_NO_ERROR;
-        if ((error = GLES20.glGetError()) != GL_NO_ERROR) {
-            Log.e(TAG, "glError: " + error);
+        int error = GLES20.glGetError();
+        if ((error != GL_NO_ERROR) {
+            Debugger.e(TAG, "GL error: " + GLU.gluErrorString(error), t);
         }
     }
 }
