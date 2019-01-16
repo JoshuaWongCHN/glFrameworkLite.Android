@@ -1,5 +1,6 @@
 package com.joshua.glframeworklite.helper;
 
+import com.joshua.glframeworklite.ShaderProgram;
 import com.joshua.glframeworklite.utils.Debugger;
 
 import static android.opengl.GLES20.GL_COMPILE_STATUS;
@@ -88,10 +89,15 @@ public class ShaderHelper {
 
     public static boolean validateProgram(int programObjectId) {
         glValidateProgram(programObjectId);
+        ShaderProgram.checkError();
+
         final int[] validateStatus = new int[1];
         glGetProgramiv(programObjectId, GL_VALIDATE_STATUS, validateStatus, 0);
-        Debugger.v(TAG, "Results of validating program:" + validateStatus[0] + "\nLog:" + glGetShaderInfoLog
-                (programObjectId));
+        ShaderProgram.checkError();
+
+        Debugger.v(TAG, "Results of validating program:" + validateStatus[0] + "\nLog:" + glGetProgramInfoLog(programObjectId));
+        ShaderProgram.checkError();
+
         return validateStatus[0] != 0;
     }
 
@@ -99,14 +105,21 @@ public class ShaderHelper {
         int program;
 
         //Compile the shaders
+        ShaderProgram.checkError();
+
         int vertexShader = compileVertexShader(vertexShaderSource);
+        ShaderProgram.checkError();
+
         int fragmentShader = compileFragmentShader(fragmentShaderSource);
+        ShaderProgram.checkError();
 
         //link them into a shader program
         program = linkProgram(vertexShader, fragmentShader);
+        ShaderProgram.checkError();
 
         if (Debugger.DEBUG) {
             validateProgram(program);
+            ShaderProgram.checkError();
         }
 
         return program;

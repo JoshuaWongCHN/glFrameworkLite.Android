@@ -89,7 +89,7 @@ public class ShaderProgram {
         glUseProgram(mProgram);
     }
 
-    protected void checkError() {
+    public static void checkError() {
         int error = GLES20.glGetError();
         if (error != GL_NO_ERROR) {
             Throwable t = new Throwable();

@@ -6,7 +6,17 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES30.*;
+import static android.opengl.GLES30.GL_ARRAY_BUFFER;
+import static android.opengl.GLES30.GL_ELEMENT_ARRAY_BUFFER;
+import static android.opengl.GLES30.GL_FLOAT;
+import static android.opengl.GLES30.GL_STATIC_DRAW;
+import static android.opengl.GLES30.glBindBuffer;
+import static android.opengl.GLES30.glBindVertexArray;
+import static android.opengl.GLES30.glBufferData;
+import static android.opengl.GLES30.glEnableVertexAttribArray;
+import static android.opengl.GLES30.glGenBuffers;
+import static android.opengl.GLES30.glGenVertexArrays;
+import static android.opengl.GLES30.glVertexAttribPointer;
 
 /**
  * @Description:
@@ -17,12 +27,24 @@ import static android.opengl.GLES30.*;
 public class VertexArray {
     private static final String TAG = "VertexArray";
 
-    private int mVAOId, mVerticesVBOId, mIndicesVBOId;
+    private int mVAOId = Constants.INVALID_BUFFER;
+    private int mVerticesVBOId = Constants.INVALID_BUFFER;
+    private int mIndicesVBOId = Constants.INVALID_BUFFER;
+    private ShaderProgram mProgram;
+
+    public VertexArray(ShaderProgram program) {
+        mProgram = program;
+    }
 
     public void addVertices(float[] vertices) {
-        if (mVerticesVBOId != Constants.INVALID_BUFFER) {
+        if (mProgram == null) {
+            return;
+        }
+        mProgram.useProgram();
+
+        if (mVerticesVBOId == Constants.INVALID_BUFFER) {
             int[] vboIds = IdPool.getBufferId();
-            glGenVertexArrays(1, vboIds, 0);
+            glGenBuffers(1, vboIds, 0);
             if (vboIds[0] == Constants.INVALID_BUFFER) {
                 Debugger.e(TAG, "Generate VBO failed!");
                 return;
@@ -37,14 +59,24 @@ public class VertexArray {
         verticesBuffer.put(vertices);
         verticesBuffer.position(0);
         glBindBuffer(GL_ARRAY_BUFFER, mVerticesVBOId);
-        glBufferData(GL_ARRAY_BUFFER, verticesBuffer.capacity(), verticesBuffer, GL_STATIC_DRAW);
+
+        glBufferData(GL_ARRAY_BUFFER, Float.BYTES * vertices.length, verticesBuffer, GL_STATIC_DRAW);
+        ShaderProgram.checkError();
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        ShaderProgram.checkError();
+
     }
 
     public void addIndices(byte[] indices) {
-        if (mIndicesVBOId != Constants.INVALID_BUFFER) {
+        if (mProgram == null) {
+            return;
+        }
+        mProgram.useProgram();
+
+        if (mIndicesVBOId == Constants.INVALID_BUFFER) {
             int[] vboIds = IdPool.getBufferId();
-            glGenVertexArrays(1, vboIds, 0);
+            glGenBuffers(1, vboIds, 0);
             if (vboIds[0] == Constants.INVALID_BUFFER) {
                 Debugger.e(TAG, "Generate VBO failed!");
                 return;
@@ -61,8 +93,13 @@ public class VertexArray {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    public void bind() {
-        if (mVAOId != Constants.INVALID_BUFFER) {
+    public void bind(int positionHandle, int componentCount, int stride) {
+        if (mProgram == null) {
+            return;
+        }
+        mProgram.useProgram();
+
+        if (mVAOId == Constants.INVALID_BUFFER) {
             int[] vaoIds = IdPool.getBufferId();
             glGenVertexArrays(1, vaoIds, 0);
             if (vaoIds[0] == Constants.INVALID_BUFFER) {
@@ -73,8 +110,27 @@ public class VertexArray {
             IdPool.recycle(vaoIds);
         }
         glBindVertexArray(mVAOId);
+
         glBindBuffer(GL_ARRAY_BUFFER, mVerticesVBOId);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicesVBOId);
+
+        if (mIndicesVBOId != Constants.INVALID_BUFFER) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIndicesVBOId);
+        }
+        glVertexAttribPointer(positionHandle, componentCount, GL_FLOAT, false, stride * Float.BYTES, 0);
+        glEnableVertexAttribArray(positionHandle);
+//        glBindVertexArray(0);
+    }
+
+    public void begin() {
+        if (mProgram == null) {
+            return;
+        }
+        mProgram.useProgram();
+        glBindVertexArray(mVAOId);
+    }
+
+    public void end() {
+        glBindVertexArray(0);
     }
 }
 
